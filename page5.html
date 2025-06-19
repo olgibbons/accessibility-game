@@ -68,9 +68,6 @@
                 <button class="govuk-button govuk-button--secondary">Submit answer</button>
             </form>
 
-            <p class="govuk-body-s govuk-!-margin-top-6">
-                <a href="summary.html" class="govuk-link">See summary</a>
-            </p>
             <!-- Continue link -->
             <a href="page6.html" class="govuk-button govuk-button--secondary govuk-!-margin-top-4">
                 Continue
@@ -86,7 +83,6 @@
     <script>window.GOVUKFrontend.initAll()</script>
 
     <script>
-        // Submit answers to S3
         document.getElementById('answer-form')?.addEventListener('submit', async function (e) {
             e.preventDefault();
 
