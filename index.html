@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">
+
 <head>
   <meta charset="utf-8">
   <title>Register an Emotional Support Dinosaur - GOV.UK</title>
@@ -9,6 +10,7 @@
   <link rel="stylesheet" href="assets/css/govuk-frontend.min.css">
   <link rel="stylesheet" href="https://assets.publishing.service.gov.uk/government-frontend/fonts.css">
 </head>
+
 <body class="govuk-template__body">
   <script>document.body.className += ' js-enabled';</script>
 
@@ -54,5 +56,30 @@
   <script>
     window.GOVUKFrontend.initAll()
   </script>
+
+  <script>
+    document.getElementById('answer-form')?.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const formData = {
+        page: window.location.pathname, // Identifies which page they're on
+        answer: document.getElementById('answer')?.value || ''
+      };
+
+      const response = await fetch('https://oure4qiim4.execute-api.eu-west-2.amazonaws.com/dev/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        alert('Answer submitted! ✅');
+        window.location.href = 'page3.html';
+      } else {
+        alert('Something went wrong ❌');
+      }
+    });
+  </script>
 </body>
+
 </html>

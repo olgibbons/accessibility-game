@@ -6,6 +6,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="assets/css/govuk-frontend.min.css">
   <link rel="stylesheet" href="https://assets.publishing.service.gov.uk/government-frontend/fonts.css">
+  <style>
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .bubble {
+      max-width: 600px;
+      margin: 0.5rem auto;
+      background: #f3f2f1;
+      border-radius: 10px;
+      padding: 1rem;
+      position: relative;
+    }
+
+    .bubble::before {
+      content: '';
+      position: absolute;
+      top: 1rem;
+      left: -10px;
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 10px solid #f3f2f1;
+    }
+  </style>
 </head>
 <body class="govuk-template__body">
   <script>document.body.className += ' js-enabled';</script>
@@ -27,7 +56,6 @@
       <div id="answers-container" class="govuk-body">
         <p>Loading answers...</p>
       </div>
-
       <p class="govuk-body-s govuk-!-margin-top-6">
         <a href="page1.html" class="govuk-link">Start again</a>
       </p>
@@ -35,6 +63,17 @@
   </div>
 
   <script>
+    const pageTitles = {
+      "/index.html": "Page 1 – Name your dinosaur",
+      "/page1.html": "Page 1 – Name your dinosaur",
+      "/page2.html": "Page 2 – Species details",
+      "/page3.html": "Page 3 – Mental state",
+      "/page4.html": "Page 4 – Riding permit",
+      "/page5.html": "Page 5 – Journey rating",
+      "/page6.html": "Page 6 – Upload photo",
+      "/page7.html": "Page 7 – Dino disability"
+    };
+
     async function fetchAnswers() {
       try {
         const response = await fetch('https://oure4qiim4.execute-api.eu-west-2.amazonaws.com/dev/get-answers');
@@ -42,23 +81,34 @@
 
         const answers = await response.json();
         const container = document.getElementById('answers-container');
-        container.innerHTML = ''; // Clear "loading"
+        container.innerHTML = '';
 
         if (answers.length === 0) {
           container.innerHTML = '<p>No answers found.</p>';
           return;
         }
 
-        answers.forEach((entry, i) => {
-          const div = document.createElement('div');
-          div.className = 'govuk-inset-text';
-          div.innerHTML = `
-            <strong>Entry ${i + 1}</strong><br>
-            <strong>Page:</strong> ${entry.page || 'Unknown'}<br>
-            <strong>Answer:</strong> ${entry.answer || '—'}
-          `;
-          container.appendChild(div);
+        const grouped = {};
+        answers.forEach(entry => {
+          const page = entry.page || 'unknown';
+          const title = pageTitles[page] || page;
+          if (!grouped[title]) grouped[title] = [];
+          grouped[title].push(entry.answer || '—');
         });
+
+        for (const [title, responses] of Object.entries(grouped)) {
+          const h2 = document.createElement('h2');
+          h2.className = 'page-title';
+          h2.textContent = title;
+          container.appendChild(h2);
+
+          responses.forEach(answer => {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.textContent = answer;
+            container.appendChild(bubble);
+          });
+        }
       } catch (err) {
         document.getElementById('answers-container').innerHTML = `<p class="govuk-error-message">Error: ${err.message}</p>`;
       }
