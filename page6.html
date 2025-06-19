@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" class="govuk-template">
+<head>
+  <meta charset="utf-8">
+  <title>Upload Dinosaur Photo - GOV.UK</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" href="assets/css/govuk-frontend.min.css">
+  <link rel="stylesheet" href="https://assets.publishing.service.gov.uk/government-frontend/fonts.css">
+  <style>
+    #fake-upload-button {
+      display: none;
+      margin-top: 1.5rem;
+    }
+  </style>
+</head>
+<body class="govuk-template__body">
+  <script>document.body.className += ' js-enabled';</script>
+
+  <header class="govuk-header" role="banner" data-module="govuk-header">
+    <div class="govuk-header__container govuk-width-container">
+      <div class="govuk-header__logo">
+        <a href="/" class="govuk-header__link govuk-header__link--homepage">GOV.UK</a>
+      </div>
+      <div class="govuk-header__content">
+        <span class="govuk-header__service-name">Register an Emotional Support Dinosaur</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+      <h1 class="govuk-heading-l">Upload a Dinosaur Photo</h1>
+      <p class="govuk-body">Please confirm all of the following before proceeding:</p>
+
+      <div class="govuk-form-group">
+        <div class="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="cb1" type="checkbox">
+            <label class="govuk-label govuk-checkboxes__label" for="cb1">
+              The dinosaur is not smiling, and is not wearing a head covering or eye glasses.
+            </label>
+          </div>
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="cb2" type="checkbox">
+            <label class="govuk-label govuk-checkboxes__label" for="cb2">
+              The photo was taken within the last 6 months.
+            </label>
+          </div>
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="cb3" type="checkbox">
+            <label class="govuk-label govuk-checkboxes__label" for="cb3">
+              The image includes a full uneaten human next to the dinosaur.
+            </label>
+          </div>
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="cb4" type="checkbox">
+            <label class="govuk-label govuk-checkboxes__label" for="cb4">
+              She is a clever girl.
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <button id="fake-upload-button" class="govuk-button">Browse for file</button>
+
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+      <!-- Answer feedback box -->
+      <form id="answer-form">
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="answer">What's wrong with this page?</label>
+          <input class="govuk-input" id="answer" name="answer" type="text">
+        </div>
+        <button class="govuk-button" type="submit">Submit answer</button>
+      </form>
+
+      <!-- Continue button -->
+      <a href="pageX+1.html" class="govuk-button govuk-button--secondary govuk-!-margin-top-4">Continue</a>
+    </main>
+  </div>
+
+  <!-- Hidden audio -->
+  <audio id="warning-sound" src="assets/audio/Please skip this page.m4a" preload="auto"></audio>
+
+  <script src="assets/js/govuk-frontend.min.js"></script>
+  <script>window.GOVUKFrontend.initAll()</script>
+  <script>
+    const checkboxes = [
+      document.getElementById('cb1'),
+      document.getElementById('cb2'),
+      document.getElementById('cb3'),
+      document.getElementById('cb4')
+    ];
+    const fakeUploadButton = document.getElementById('fake-upload-button');
+    const sound = document.getElementById('warning-sound');
+
+    function updateButtonVisibility() {
+      const allChecked = checkboxes.every(cb => cb.checked);
+      fakeUploadButton.style.display = allChecked ? 'inline-block' : 'none';
+    }
+
+    checkboxes.forEach(cb => cb.addEventListener('change', updateButtonVisibility));
+
+    fakeUploadButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      checkboxes.forEach(cb => cb.checked = false);
+      fakeUploadButton.style.display = 'none';
+      sound.play();
+      alert("Please check all the boxes before proceeding.");
+    });
+
+    // Answer submission
+    document.getElementById('answer-form')?.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const formData = {
+        page: window.location.pathname,
+        answer: document.getElementById('answer')?.value || ''
+      };
+
+      const response = await fetch('https://oure4qiim4.execute-api.eu-west-2.amazonaws.com/dev/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        alert('Answer submitted! ✅');
+      } else {
+        alert('Something went wrong ❌');
+      }
+    });
+  </script>
+</body>
+</html>

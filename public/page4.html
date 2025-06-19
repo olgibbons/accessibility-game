@@ -8,39 +8,24 @@
 
     <link rel="stylesheet" href="assets/css/govuk-frontend.min.css">
     <link rel="stylesheet" href="https://assets.publishing.service.gov.uk/government-frontend/fonts.css">
+
     <style>
-        /* Forces layout to break horribly at 200% zoom */
+        /* ❌ Layout that breaks at 200% zoom */
         .legal-section {
             display: flex;
             flex-direction: row;
-            flex-wrap: wrap;
             gap: 2rem;
+            overflow-x: auto;
         }
 
-        /* 💥 At narrow screens / zoomed viewports, force jank */
-        @media (max-width: 600px) {
-            .legal-section {
-                position: relative;
-                overflow: hidden;
-                min-height: 600px;
-            }
+        .legal-column {
+            min-width: 45%;
+        }
 
-            .legal-column {
-                position: absolute;
-                width: 600px;
-                background: white;
-                opacity: 0.95;
-            }
-
-            .legal-column:last-child {
-                left: 300px;
-                background: #f3f2f1;
-                z-index: 2;
-            }
-
-            .govuk-width-container {
-                width: 1000px;
-            }
+        /* Lock widths to cause overflow at zoom */
+        .legal-section,
+        .govuk-main-wrapper {
+            max-width: 1000px;
         }
     </style>
 </head>
@@ -164,7 +149,6 @@
             }
         });
     </script>
-
 </body>
 
 </html>

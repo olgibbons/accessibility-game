@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" class="govuk-template">
+
+<head>
+    <meta charset="utf-8">
+    <title>Mental State - GOV.UK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="assets/css/govuk-frontend.min.css">
+    <link rel="stylesheet" href="https://assets.publishing.service.gov.uk/government-frontend/fonts.css">
+
+    <style>
+        .mood-image {
+            width: 180px;
+            margin: 1rem;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+
+        .mood-image:hover {
+            border-color: #1d70b8;
+            /* Visually suggests interactivity, but only for mouse users */
+        }
+
+        .mood-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body class="govuk-template__body">
+    <script>document.body.className += ' js-enabled';</script>
+
+    <header class="govuk-header" role="banner" data-module="govuk-header">
+        <div class="govuk-header__container govuk-width-container">
+            <div class="govuk-header__logo">
+                <a href="/" class="govuk-header__link govuk-header__link--homepage">GOV.UK</a>
+            </div>
+            <div class="govuk-header__content">
+                <span class="govuk-header__service-name">Register an Emotional Support Dinosaur</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper" id="main-content" role="main">
+
+            <!-- ❌ Image-based heading (no semantic h1) -->
+            <img src="assets/images/Screenshot 2025-06-18 at 01.10.11.png" alt=""
+                style="width: 100%; max-width: 500px; margin-bottom: 2rem;">
+
+            <p class="govuk-body">Please select the image that best describes your current mental state:</p>
+
+            <!-- ❌ No alt text on these -->
+            <div class="mood-container">
+                <button class="mood-button"
+                    style="background: none; border: none; padding: 0; margin: 1rem; cursor: pointer;">
+                    <img src="assets/images/sad_dino.png" class="mood-image" alt="">
+                </button>
+                <button class="mood-button"
+                    style="background: none; border: none; padding: 0; margin: 1rem; cursor: pointer;">
+                    <img src="assets/images/depressed_triceratops.jpg" class="mood-image" alt="">
+                </button>
+                <button class="mood-button"
+                    style="background: none; border: none; padding: 0; margin: 1rem; cursor: pointer;">
+                    <img src="assets/images/angry_trex.jpg" class="mood-image" alt="">
+                </button>
+                <button class="mood-button"
+                    style="background: none; border: none; padding: 0; margin: 1rem; cursor: pointer;">
+                    <img src="assets/images/happy_barney.jpg" class="mood-image" alt="">
+                </button>
+            </div>
+
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+            <!-- Answer box -->
+            <form id="answer-form">
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="answer">What's wrong with this page?</label>
+                    <input class="govuk-input" id="answer" name="answer" type="text">
+                </div>
+                <button class="govuk-button">Submit answer</button>
+            </form>
+            <a href="page4.html" class="govuk-button govuk-button--secondary govuk-!-margin-top-4">
+                Continue
+            </a>
+
+            <p class="govuk-body-s govuk-!-margin-top-6">
+                <a href="page2.html" class="govuk-link">Back to previous</a>
+            </p>
+
+        </main>
+    </div>
+
+    <script src="assets/js/govuk-frontend.min.js"></script>
+    <script>window.GOVUKFrontend.initAll()</script>
+    <script>
+        document.getElementById('answer-form')?.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = {
+                page: window.location.pathname, // Identifies which page this is
+                answer: document.getElementById('answer')?.value || ''
+            };
+
+            const response = await fetch('https://oure4qiim4.execute-api.eu-west-2.amazonaws.com/dev/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                alert('Answer submitted! ✅');
+                // Optionally navigate to next page:
+                // window.location.href = 'page5.html';
+            } else {
+                alert('Something went wrong ❌');
+            }
+        });
+    </script>
+</body>
+
+</html>
